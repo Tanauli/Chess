@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chess Game</title>
+  <style>
+    .board {
+      display: flex;
+      flex-wrap: wrap;
+      width: 480px;
+      height: 480px;
+      border: 2px solid #000;
+    }
+
+    .square {
+      width: 60px;
+      height: 60px;
+      box-sizing: border-box;
+    }
+
+    .white {
+      background-color: #fff;
+    }
+
+    .black {
+      background-color: #555;
+    }
+
+    .piece {
+      width: 60px;
+      height: 60px;
+      background-size: cover;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="board" id="board"></div>
+
+  <script>
+    // Chess pieces Unicode characters
+    const pieces = {
+      white: {
+        king: '&#9812;',
+        queen: '&#9813;',
+        rook: '&#9814;',
+        bishop: '&#9815;',
+        knight: '&#9816;',
+        pawn: '&#9817;'
+      },
+      black: {
+        king: '&#9818;',
+        queen: '&#9819;',
+        rook: '&#9820;',
+        bishop: '&#9821;',
+        knight: '&#9822;',
+        pawn: '&#9823;'
+      }
+    };
+
+    // Piece positions on the board (initial state)
+    const startingPositions = [
+      'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
+      'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
+      '', '', '', '', '', '', '', '',
+      '', '', '', '', '', '', '', '',
+      '', '', '', '', '', '', '', '',
+      '', '', '', '', '', '', '', '',
+      'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
+      'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
+    ];
+
+    // Chessboard representation (8x8 array)
+    const board = [];
+
+    // Selected piece
+    let selectedPiece = null;
+
+    // Create the chessboard
+    function createChessboard() {
+      const boardElement = document.getElementById('board');
+
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const square = document.createElement('div');
+          square.classList.add('square');
+          square.classList.add((i + j) % 2 === 0 ? 'white' : 'black');
+          square.dataset.row = i;
+          square.dataset.col = j;
+
+          square.addEventListener('click', selectPiece);
+
+          boardElement.appendChild(square);
+
+          if (startingPositions[i * 8 + j] !== '') {
+            const piece = document.createElement('div');
+            piece.classList.add('piece');
+            piece.innerHTML = getPieceUnicode(startingPositions[i * 8 + j]);
+            square.appendChild(piece);
+          }
+
+          board[i * 8 + j] = startingPositions[i * 8 + j];
+        }
+      }
+    }
+
+    // Get the Unicode character for the given chess piece
+    function getPieceUnicode(piece) {
+      const color = piece === piece.toUpperCase() ? '
+
+('white' : 'black');
+const pieceType = piece.toLowerCase();  return pieces[color][pieceType];
+}
+
+// Handle piece selection
+function selectPiece(event) {
+  const square = event.target;
+  const row = parseInt(square.dataset.row);
+  const col = parseInt(square.dataset.col);
+
+  const piece = board[row * 8 + col];
+
+  if (selectedPiece === null) {
+    if (piece !== '') {
+      selectedPiece = { row, col };
+      square.classList.add('selected');
+    }
+  } else {
+    const { row: selectedRow, col: selectedCol } = selectedPiece;
+    const selectedPieceType = board[selectedRow * 8 + selectedCol];
+
+    if (isValidMove(selectedRow, selectedCol, row, col)) {
+      movePiece(selectedRow, selectedCol, row, col, selectedPieceType);
+    }
+
+    // Clear the selected piece
+    square.classList.remove('selected');
+    selectedPiece = null;
+  }
+}
+
+// Check if the move is valid
+function isValidMove(fromRow, fromCol, toRow, toCol) {
+  // Validate the move based on the piece type and chess rules
+  const piece = board[fromRow * 8 + fromCol];
+  const pieceType = piece.toLowerCase();
+  const color = piece === piece.toUpperCase() ? 'white' : 'black';
+
+  // Implement the logic to validate the move for each piece type
+  // (e.g., pawn, rook, bishop, knight, queen, king)
+
+  return true; // Placeholder - always allow the move for now
+}
+
+// Move the piece on the board
+function movePiece(fromRow, fromCol, toRow, toCol, pieceType) {
+  const fromIndex = fromRow * 8 + fromCol;
+  const toIndex = toRow * 8 + toCol;
+
+  // Move the piece in the internal board representation
+  board[toIndex] = board[fromIndex];
+  board[fromIndex] = '';
+
+  // Move the piece visually on the chessboard
+  const fromSquare = document.querySelector(`[data-row="${fromRow}"][data-col="${fromCol}"]`);
+  const toSquare = document.querySelector(`[data-row="${toRow}"][data-col="${toCol}"]`);
+
+  toSquare.innerHTML = fromSquare.innerHTML;
+  fromSquare.innerHTML = '';
+
+  // Clear any selected piece styling
+  fromSquare.classList.remove('selected');
+}
+
+// Initialize the chess game
+function initializeGame() {
+  createChessboard();
+}
+
+// Run the game initialization
+initializeGame();
+ </script>
+</body>
+</html>
+```
